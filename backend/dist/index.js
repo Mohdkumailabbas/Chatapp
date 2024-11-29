@@ -1,7 +1,11 @@
 import express from "express";
-const app = express();
 import authRoutes from "./routes/authRoute.js";
 import messageRoutes from "./routes/messageRout.js";
+import dotenv from "dotenv";
+dotenv.config();
+const app = express();
+// Middleware to parse JSON
+app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 app.get("/", (req, res) => {
