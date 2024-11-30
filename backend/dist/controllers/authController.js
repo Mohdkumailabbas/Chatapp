@@ -1,4 +1,4 @@
-import { userSchema } from "../schema/userSchema.js";
+import { loginSchema, userSchema } from "../schema/userSchema.js";
 import prisma from "../db/prisma.js";
 import bcryptjs from "bcryptjs";
 import { genrateToken } from "../utils/genrateToken.js";
@@ -51,6 +51,42 @@ export const signup = async (req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 };
-export const login = () => { };
-export const logout = () => { };
+export const login = async (req, res) => {
+    try {
+        const result = loginSchema.safeParse(req.body);
+        if (!result.success) {
+            return res.status(400).json({ errors: result.error.errors });
+        }
+        const { username, password } = result.data;
+        const user = await prisma.user.findUnique({ where: { username } });
+        if (!user) {
+            return res.status(400).json({ error: "Invalid User" });
+        }
+        const isPasswordCorrect = await bcryptjs.compare(password, user.password);
+        if (!isPasswordCorrect) {
+            return res.status(400).json({ error: "Wrong Password!" });
+        }
+        genrateToken(user.id, res);
+        res.status(200).json({
+            id: user.id,
+            fullName: user.fullname,
+            username: user.username,
+            profilePic: user.profilePic,
+        });
+    }
+    catch (error) {
+        console.log("Error in login controller", error.message);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+};
+export const logout = async (req, res) => {
+    try {
+        res.cookie("jwt", "", { maxAge: 0 });
+        res.status(200).json({ message: "Logout Succesfully!" });
+    }
+    catch (error) {
+        console.log("Error in logout controller", error.message);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+};
 //# sourceMappingURL=authController.js.map

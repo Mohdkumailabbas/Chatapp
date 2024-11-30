@@ -11,3 +11,8 @@ export const userSchema=z.object({
     message:"Password must match",
     path:["confirmPassword"]// Error will be attached to the confirmpassword field
 })
+export const loginSchema=z.object({
+    username: z.string().min(1, "Username is required"),
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    
+}) 
