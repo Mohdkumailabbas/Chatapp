@@ -33,7 +33,7 @@ updatedAt DateTime @updatedAt
 participantsIds String[]
 particpants User[]
 messageIds String[]
-messages Message[]
+messages Message[] // One-to-Many relationship with Message
 }
 model Message{
 id String  @id  @default(cuid())
