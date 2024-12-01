@@ -27,3 +27,13 @@ Non-Matches:
 Row 2: {2, 3, 4}
 Contains 2 but does not contain 1.
 ❌ No Match
+
+@> ("contains")
+Checks if the left-hand array contains all the elements of the right-hand array.
+ARRAY[1, 2, 3] @> ARRAY[1, 2]  -- true (left contains all elements of right)
+ARRAY[1, 2] @> ARRAY[3]        -- false
+<@ ("is contained by")
+Checks if the left-hand array is contained within the right-hand array.
+ARRAY[1, 2] <@ ARRAY[1, 2, 3]  -- true (left is fully contained within right)
+ARRAY[3] <@ ARRAY[1, 2]        -- false
+hasEvery filter in Prisma behaves like the @> operator in SQL. 

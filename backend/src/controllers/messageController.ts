@@ -56,4 +56,29 @@ export const sendMessage = async (req: Request, res: Response) => {
 }
 
 
-
+export const getMessages = async (req, res) => {
+    try {
+        const {id:userTOChatId}=req.params;
+        const senderId=req.user.id;
+        const conversation = await prisma.conversation.findFirst({
+            where:{
+                participantsIds:{
+                    hasEvery:[senderId,userTOChatId] // Ensures that the array participantsIds contains both senderId and userTOChatId. This confirms that the conversation involves both participants.
+                }
+            },
+            include:{
+                messages:{
+                    orderBy:{
+                        createdAt:"asc"
+                    }
+                }
+            }
+        }) 
+        if (!conversation) {
+            return res.status(200).json([]);
+        }
+        res.status(200).json(conversation.messages);
+    } catch (error) {
+        
+    }
+}
